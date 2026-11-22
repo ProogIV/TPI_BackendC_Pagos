@@ -19,3 +19,15 @@ class PagoResponse(BaseModel):
     estado: Literal["APROBADO", "RECHAZADO"]
     transaccion_id: Optional[str] = Field(default=None, description="Comprobante; nulo si se rechaza")
     mensaje: str
+
+
+class DetalleError(BaseModel):
+    campo: str
+    mensaje: str
+
+
+class ErrorResponse(BaseModel):
+    """Formato uniforme de error de los tres servicios (spec.md, sección 3). Solo se usa en /docs."""
+    error: bool = True
+    mensaje: str = Field(examples=["Error de validación en los datos enviados"])
+    detalles: Optional[list[DetalleError]] = None
