@@ -1,0 +1,20 @@
+# Entorno virtual de Python
+venv/
+.venv/
+
+# Variables de entorno (la plantilla .env.example sí se sube)
+.env
+.env.*
+!.env.example
+
+# Python y tests
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Sistema operativo y editor
+.DS_Store
+Thumbs.db
+.vscode/
