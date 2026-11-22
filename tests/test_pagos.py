@@ -87,3 +87,9 @@ def test_ruta_inexistente_responde_404_con_formato_uniforme():
 def test_la_documentacion_openapi_esta_disponible():
     assert client.get("/docs").status_code == 200
     assert URL in client.get("/openapi.json").json()["paths"]
+
+
+def test_la_documentacion_muestra_el_400_real_y_no_el_422():
+    respuestas = client.get("/openapi.json").json()["paths"][URL]["post"]["responses"]
+    assert "400" in respuestas
+    assert "422" not in respuestas

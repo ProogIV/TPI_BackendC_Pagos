@@ -8,11 +8,12 @@ Documentación automática (OpenAPI):  http://127.0.0.1:8001/docs
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from . import services
-from .schemas import PagoRequest, PagoResponse
+from .schemas import ErrorResponse, PagoRequest, PagoResponse
 
 load_dotenv()
 
@@ -51,7 +52,40 @@ def health_check():
     return {"status": "ok", "service": "pagos"}
 
 
-@app.post("/api/payments/process", response_model=PagoResponse, tags=["Pagos"])
+@app.post(
+    "/api/payments/process",
+    response_model=PagoResponse,
+    tags=["Pagos"],
+    responses={400: {"model": ErrorResponse, "description": "Datos inválidos"}},
+)
 def procesar_pago(pago: PagoRequest):
     """Aprueba el cobro si el monto no supera el límite; si lo supera, lo rechaza."""
     return services.procesar_pago(pago.order_id, pago.monto)
+
+
+# --- Documentación OpenAPI acorde a lo que realmente responde la API ---
+
+def openapi_personalizado():
+    """
+    FastAPI agrega solo una respuesta 422 a la documentación de cada endpoint con datos de entrada.
+    Como nuestro manejador de errores responde 400 (con el formato del spec), quitamos el 422
+    para que /docs muestre lo que la API hace de verdad.
+    """
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    esquema = get_openapi(
+        title=app.title,
+        version=app.version,
+        description=app.description,
+        routes=app.routes,
+    )
+    for ruta in esquema["paths"].values():
+        for operacion in ruta.values():
+            operacion.get("responses", {}).pop("422", None)
+
+    app.openapi_schema = esquema
+    return esquema
+
+
+app.openapi = openapi_personalizado
