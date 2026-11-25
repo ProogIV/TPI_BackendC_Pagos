@@ -1,0 +1,12 @@
+# Lo que NO se copia a la imagen (Clase 12): velocidad y seguridad
+venv/
+.venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+.github/
+tests/

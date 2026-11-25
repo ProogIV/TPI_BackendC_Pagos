@@ -1,10 +1,11 @@
 name: Continuous Integration - Pagos
 
 on:
+  # La rama principal de este repositorio es master
   push:
-    branches: [ main, dev ]
+    branches: [ master, main, dev ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ master, main, dev ]
 
 jobs:
   test-pagos:
@@ -15,10 +16,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python 3.11
+      - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: 'pip'
           # Este workflow corre dentro del repo de Pagos: no lleva prefijo de carpeta.
           cache-dependency-path: requirements.txt
