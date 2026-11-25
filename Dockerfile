@@ -1,5 +1,5 @@
 # Microservicio Backend C - Pagos (Python + FastAPI)
-FROM python:3.11-slim
+FROM python:3.12-slim
 
 WORKDIR /app
 
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código fuente de FastAPI
+# Copiar el código fuente de FastAPI (.dockerignore excluye venv, .env y tests)
 COPY . .
 
 # Puerto expuesto para la API de pagos
